@@ -9,7 +9,11 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.maxclst.budgetcopain",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -26,7 +30,19 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router",
+      [
+        "expo-router",
+        {
+          "origin": "https://budgetcopain.expo.app"
+        }
+      ],
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.budgetcopain",
+          "publishableKey": "pk_test_51SWthCGc3lSNnAhctcndTZbcgQtnR9BZL346xMu6c1FM3BcnuqvfHkSnBgO4FiyCFc4LypRZmh7yZCSt0Ut4YRQ600uPIdRYyf"
+        }
+      ],
       [
         "expo-splash-screen",
         {
@@ -43,6 +59,14 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {
+        "origin": "https://budgetcopain.expo.app"
+      },
+      "eas": {
+        "projectId": "efe750a6-45c8-41ae-971e-5602ab653f63"
+      }
     }
   }
 }

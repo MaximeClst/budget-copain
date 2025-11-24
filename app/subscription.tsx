@@ -1,7 +1,5 @@
 import { useApp } from "@/contexts/AppContext";
-import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { Star, X } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -94,49 +92,6 @@ export default function SubscriptionScreen() {
           { transform: [{ translateY: slideAnim }] },
         ]}
       >
-        <LinearGradient
-          colors={["#8B5CF6", "#6D28D9"]}
-          style={styles.topSection}
-        >
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={handleClose}
-            activeOpacity={0.7}
-          >
-            <View style={styles.closeButtonBg}>
-              <X color="#FFFFFF" size={24} />
-            </View>
-          </TouchableOpacity>
-
-          <Text style={styles.topTitle}>Let&apos;s get started</Text>
-          <Text style={styles.mainTitle}>
-            How your free{Platform.OS === "web" ? "\n" : " "}trial works
-          </Text>
-
-          <View style={styles.ratingContainer}>
-            <Star fill="#FCD34D" color="#FCD34D" size={20} />
-            <Star fill="#FCD34D" color="#FCD34D" size={20} />
-            <Star fill="#FCD34D" color="#FCD34D" size={20} />
-            <Star fill="#FCD34D" color="#FCD34D" size={20} />
-            <Star fill="#FCD34D" color="#FCD34D" size={20} />
-            <Text style={styles.ratingText}>4.8 on App store</Text>
-            <Text style={styles.ratingCount}>(21k reviews)</Text>
-          </View>
-
-          <View style={styles.infoCard}>
-            <View style={styles.infoIconContainer}>
-              <View style={styles.infoIcon} />
-            </View>
-            <View style={styles.infoContent}>
-              <Text style={styles.infoTitle}>Today</Text>
-              <Text style={styles.infoDescription}>
-                Get instant access and see how Buddy can improve your financial
-                life.
-              </Text>
-            </View>
-          </View>
-        </LinearGradient>
-
         <SafeAreaView style={styles.bottomSection} edges={["bottom"]}>
           <View style={styles.handle} />
 
