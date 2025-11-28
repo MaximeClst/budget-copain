@@ -3,10 +3,10 @@ import { useApp } from "@/contexts/AppContext";
 import {
   ScrollView,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Button, Text, Pressable } from "@/components/ui";
 
 export default function CategoriesScreen() {
   const { appState } = useApp();
@@ -14,16 +14,20 @@ export default function CategoriesScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <View>
-            <Text style={styles.title}>Catégories</Text>
-            <Text style={styles.subtitle}>
-              {activeCategories.length} catégories actives
-            </Text>
+      <SafeAreaView edges={["top"]}>
+        <View style={styles.header}>
+          <View style={styles.headerContent}>
+            <View>
+              <Text className="text-4xl font-extrabold text-foreground-900 mb-1">
+                Catégories
+              </Text>
+              <Text className="text-sm text-foreground-600 font-medium">
+                {activeCategories.length} catégories actives
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
+      </SafeAreaView>
 
       <ScrollView
         style={styles.content}
@@ -32,10 +36,10 @@ export default function CategoriesScreen() {
       >
         <View style={styles.categoriesGrid}>
           {activeCategories.map((category) => (
-            <TouchableOpacity
+            <Pressable
               key={category.id}
-              style={[styles.categoryCard, { borderColor: category.color }]}
-              activeOpacity={0.7}
+              className="w-[48%] bg-card rounded-2xl p-5 items-center gap-3 border-2 shadow-sm"
+              style={{ borderColor: category.color }}
             >
               <View
                 style={[
@@ -43,19 +47,21 @@ export default function CategoriesScreen() {
                   { backgroundColor: category.color + "20" },
                 ]}
               >
-                <Text style={styles.categoryIcon}>{category.icon}</Text>
+                <Text className="text-3xl">{category.icon}</Text>
               </View>
-              <Text style={styles.categoryName}>{category.name}</Text>
-            </TouchableOpacity>
+              <Text className="text-base font-semibold text-foreground-900 text-center">
+                {category.name}
+              </Text>
+            </Pressable>
           ))}
         </View>
 
         {appState.userConfig?.subscriptionPlan === "free" && (
           <View style={styles.limitBanner}>
-            <Text style={styles.limitText}>
+            <Text className="text-base font-semibold text-foreground-900 text-center">
               🎁 Version gratuite : {activeCategories.length}/10 catégories
             </Text>
-            <Text style={styles.limitSubtext}>
+            <Text className="text-sm text-foreground-600 text-center">
               Passe en premium pour des catégories illimitées
             </Text>
           </View>

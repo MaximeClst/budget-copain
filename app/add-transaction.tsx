@@ -1,17 +1,10 @@
+import { Button, Input, Pressable, Text } from "@/components/ui";
 import Colors from "@/constants/Colors";
 import { useApp } from "@/contexts/AppContext";
 import { CategoryId, TransactionType } from "@/types";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import {
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Platform, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AddTransactionScreen() {
@@ -50,117 +43,125 @@ export default function AddTransactionScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.typeSelector}>
-          <TouchableOpacity
+          <Pressable
+            className="flex-1 py-4 rounded-2xl bg-card items-center border-2"
             style={[
-              styles.typeButton,
-              type === "expense" && styles.typeButtonActiveExpense,
+              type === "expense"
+                ? {
+                    backgroundColor: Colors.danger + "10",
+                    borderColor: Colors.danger,
+                  }
+                : { borderColor: Colors.border },
             ]}
             onPress={() => setType("expense")}
-            activeOpacity={0.8}
           >
             <Text
-              style={[
-                styles.typeButtonText,
-                type === "expense" && styles.typeButtonTextActive,
-              ]}
+              className={
+                type === "expense"
+                  ? "text-base font-bold text-foreground-900"
+                  : "text-base font-semibold text-foreground-600"
+              }
             >
               Dépense
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
+            className="flex-1 py-4 rounded-2xl bg-card items-center border-2"
             style={[
-              styles.typeButton,
-              type === "income" && styles.typeButtonActiveIncome,
+              type === "income"
+                ? {
+                    backgroundColor: Colors.success + "10",
+                    borderColor: Colors.success,
+                  }
+                : { borderColor: Colors.border },
             ]}
             onPress={() => setType("income")}
-            activeOpacity={0.8}
           >
             <Text
-              style={[
-                styles.typeButtonText,
-                type === "income" && styles.typeButtonTextActive,
-              ]}
+              className={
+                type === "income"
+                  ? "text-base font-bold text-foreground-900"
+                  : "text-base font-semibold text-foreground-600"
+              }
             >
               Revenu
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
 
         <View style={styles.amountContainer}>
-          <TextInput
-            style={styles.amountInput}
+          <Input
             value={amount}
             onChangeText={setAmount}
             placeholder="0"
-            placeholderTextColor={Colors.border}
             keyboardType="decimal-pad"
             autoFocus
+            className="text-5xl font-extrabold text-center min-w-[100px] border-0 bg-transparent p-0"
           />
-          <Text style={styles.currency}>
+          <Text className="text-3xl font-bold text-foreground-600">
             {appState.userConfig?.currency || "€"}
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Catégorie</Text>
+          <Text className="text-lg font-bold text-foreground-900">
+            Catégorie
+          </Text>
           <View style={styles.categoriesGrid}>
             {appState.categories
               .filter((c) => c.isActive)
               .map((category) => (
-                <TouchableOpacity
+                <Pressable
                   key={category.id}
+                  className="flex-row items-center gap-2 py-3 px-4 rounded-xl bg-card border-2"
                   style={[
-                    styles.categoryChip,
                     categoryId === category.id && {
                       backgroundColor: category.color,
                       borderColor: category.color,
                     },
                   ]}
                   onPress={() => setCategoryId(category.id)}
-                  activeOpacity={0.7}
                 >
-                  <Text style={styles.categoryChipIcon}>{category.icon}</Text>
+                  <Text className="text-xl">{category.icon}</Text>
                   <Text
-                    style={[
-                      styles.categoryChipText,
-                      categoryId === category.id &&
-                        styles.categoryChipTextActive,
-                    ]}
+                    className={
+                      categoryId === category.id
+                        ? "text-base font-bold text-white"
+                        : "text-base font-semibold text-foreground-900"
+                    }
                   >
                     {category.name}
                   </Text>
-                </TouchableOpacity>
+                </Pressable>
               ))}
           </View>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Note (optionnel)</Text>
-          <TextInput
-            style={styles.noteInput}
+          <Text className="text-lg font-bold text-foreground-900">
+            Note (optionnel)
+          </Text>
+          <Input
             value={note}
             onChangeText={setNote}
             placeholder="Ajouter une note..."
-            placeholderTextColor={Colors.textLight}
             multiline
             numberOfLines={Platform.OS === "ios" ? undefined : 3}
             textAlignVertical="top"
+            className="min-h-[100px]"
           />
         </View>
       </ScrollView>
 
       <View style={styles.footer}>
-        <TouchableOpacity
-          style={[
-            styles.saveButton,
-            (!amount || parseFloat(amount) <= 0) && styles.saveButtonDisabled,
-          ]}
+        <Button
+          variant="solid"
           onPress={handleSave}
           disabled={!amount || parseFloat(amount) <= 0}
-          activeOpacity={0.8}
+          className="bg-primary-500"
         >
-          <Text style={styles.saveButtonText}>Enregistrer</Text>
-        </TouchableOpacity>
+          <Text className="text-white font-bold text-base">Enregistrer</Text>
+        </Button>
       </View>
     </SafeAreaView>
   );

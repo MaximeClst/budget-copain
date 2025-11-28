@@ -6,10 +6,10 @@ import { useState } from "react";
 import {
   ScrollView,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Button, Text, Pressable } from "@/components/ui";
 
 export default function TransactionsScreen() {
   const router = useRouter();
@@ -37,23 +37,26 @@ export default function TransactionsScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <View>
-            <Text style={styles.title}>Mouvements</Text>
-            <Text style={styles.subtitle}>
-              {transactions.length} transactions
-            </Text>
+      <SafeAreaView edges={["top"]}>
+        <View style={styles.header}>
+          <View style={styles.headerContent}>
+            <View>
+              <Text className="text-4xl font-extrabold text-foreground-900 mb-1">
+                Mouvements
+              </Text>
+              <Text className="text-sm text-foreground-600 font-medium">
+                {transactions.length} transactions
+              </Text>
+            </View>
+            <Pressable
+              className="w-12 h-12 rounded-full bg-background-0 items-center justify-center"
+              onPress={() => router.push("/add-transaction" as any)}
+            >
+              <Plus color={Colors.primary} size={24} />
+            </Pressable>
           </View>
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => router.push("/add-transaction" as any)}
-            activeOpacity={0.8}
-          >
-            <Plus color={Colors.primary} size={24} />
-          </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
 
       <ScrollView
         style={styles.content}
@@ -62,9 +65,11 @@ export default function TransactionsScreen() {
       >
         {transactions.length === 0 ? (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyIcon}>📝</Text>
-            <Text style={styles.emptyTitle}>Aucune transaction</Text>
-            <Text style={styles.emptyText}>
+            <Text className="text-6xl mb-4">📝</Text>
+            <Text className="text-xl font-bold text-foreground-900 mb-2">
+              Aucune transaction
+            </Text>
+            <Text className="text-base text-foreground-600 text-center px-10">
               Commence à enregistrer tes dépenses et revenus
             </Text>
           </View>
@@ -73,10 +78,9 @@ export default function TransactionsScreen() {
             {transactions.map((transaction) => {
               const category = getCategory(transaction.categoryId);
               return (
-                <TouchableOpacity
+                <Pressable
                   key={transaction.id}
-                  style={styles.transactionCard}
-                  activeOpacity={0.7}
+                  className="flex-row items-center bg-card rounded-2xl p-4 gap-3 shadow-sm"
                 >
                   <View
                     style={[
@@ -84,39 +88,38 @@ export default function TransactionsScreen() {
                       { backgroundColor: category?.color + "20" },
                     ]}
                   >
-                    <Text style={styles.transactionIconText}>
-                      {category?.icon}
-                    </Text>
+                    <Text className="text-2xl">{category?.icon}</Text>
                   </View>
                   <View style={styles.transactionInfo}>
-                    <Text style={styles.transactionCategory}>
+                    <Text className="text-base font-semibold text-foreground-900 mb-0.5">
                       {category?.name}
                     </Text>
-                    <Text style={styles.transactionDate}>
+                    <Text className="text-sm text-foreground-600 mb-0.5">
                       {formatDate(transaction.date)}
                     </Text>
                     {transaction.note && (
-                      <Text style={styles.transactionNote} numberOfLines={1}>
+                      <Text
+                        className="text-sm text-foreground-400"
+                        numberOfLines={1}
+                      >
                         {transaction.note}
                       </Text>
                     )}
                   </View>
                   <Text
-                    style={[
-                      styles.transactionAmount,
-                      {
-                        color:
-                          transaction.type === "income"
-                            ? Colors.success
-                            : Colors.danger,
-                      },
-                    ]}
+                    className="text-lg font-bold"
+                    style={{
+                      color:
+                        transaction.type === "income"
+                          ? Colors.success
+                          : Colors.danger,
+                    }}
                   >
                     {transaction.type === "income" ? "+" : "-"}
                     {transaction.amount.toFixed(0)}{" "}
                     {appState.userConfig?.currency || "€"}
                   </Text>
-                </TouchableOpacity>
+                </Pressable>
               );
             })}
           </View>

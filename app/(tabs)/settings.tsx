@@ -14,10 +14,10 @@ import {
   Alert,
   ScrollView,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Button, Text, Pressable } from "@/components/ui";
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -59,9 +59,13 @@ export default function SettingsScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Profil</Text>
-      </View>
+      <SafeAreaView edges={["top"]}>
+        <View style={styles.header}>
+          <Text className="text-4xl font-extrabold text-foreground-900">
+            Profil
+          </Text>
+        </View>
+      </SafeAreaView>
 
       <ScrollView
         style={styles.content}
@@ -70,14 +74,14 @@ export default function SettingsScreen() {
       >
         <View style={styles.profileCard}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>
+            <Text className="text-3xl font-bold text-white">
               {userConfig?.firstName?.charAt(0).toUpperCase() || "U"}
             </Text>
           </View>
-          <Text style={styles.profileName}>
+          <Text className="text-2xl font-bold text-foreground-900 mb-1">
             {userConfig?.firstName || "Utilisateur"}
           </Text>
-          <Text style={styles.profileEmail}>
+          <Text className="text-base text-foreground-600 mb-3">
             {userConfig?.email || "user@example.com"}
           </Text>
           <View
@@ -92,15 +96,13 @@ export default function SettingsScreen() {
             ]}
           >
             <Text
-              style={[
-                styles.planBadgeText,
-                {
-                  color:
-                    userConfig?.subscriptionPlan === "free"
-                      ? Colors.textSecondary
-                      : "#B8860B",
-                },
-              ]}
+              className="text-sm font-semibold"
+              style={{
+                color:
+                  userConfig?.subscriptionPlan === "free"
+                    ? Colors.textSecondary
+                    : "#B8860B",
+              }}
             >
               {getPlanLabel(userConfig?.subscriptionPlan || "free")}
             </Text>
@@ -108,91 +110,108 @@ export default function SettingsScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Abonnement</Text>
-          <TouchableOpacity
-            style={styles.settingCard}
+          <Text className="text-lg font-bold text-foreground-900 mb-1">
+            Abonnement
+          </Text>
+          <Pressable
+            className="flex-row items-center bg-card rounded-2xl p-4 gap-3 shadow-sm"
             onPress={handleSubscriptionPress}
-            activeOpacity={0.7}
           >
             <View style={[styles.settingIcon, { backgroundColor: "#FEF3C7" }]}>
               <CreditCard color={Colors.warning} size={20} />
             </View>
             <View style={styles.settingInfo}>
-              <Text style={styles.settingTitle}>Mon abonnement</Text>
-              <Text style={styles.settingDescription}>
+              <Text className="text-base font-semibold text-foreground-900 mb-0.5">
+                Mon abonnement
+              </Text>
+              <Text className="text-sm text-foreground-600">
                 {getPlanLabel(userConfig?.subscriptionPlan || "free")}
               </Text>
             </View>
             <ChevronRight color={Colors.textLight} size={20} />
-          </TouchableOpacity>
+          </Pressable>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Préférences</Text>
+          <Text className="text-lg font-bold text-foreground-900 mb-1">
+            Préférences
+          </Text>
 
-          <TouchableOpacity style={styles.settingCard} activeOpacity={0.7}>
+          <Pressable className="flex-row items-center bg-card rounded-2xl p-4 gap-3 shadow-sm">
             <View style={[styles.settingIcon, { backgroundColor: "#D1FAE5" }]}>
               <DollarSign color={Colors.success} size={20} />
             </View>
             <View style={styles.settingInfo}>
-              <Text style={styles.settingTitle}>Devise</Text>
-              <Text style={styles.settingDescription}>
+              <Text className="text-base font-semibold text-foreground-900 mb-0.5">
+                Devise
+              </Text>
+              <Text className="text-sm text-foreground-600">
                 {userConfig?.currency || "€"}
               </Text>
             </View>
             <ChevronRight color={Colors.textLight} size={20} />
-          </TouchableOpacity>
+          </Pressable>
 
-          <TouchableOpacity style={styles.settingCard} activeOpacity={0.7}>
+          <Pressable className="flex-row items-center bg-card rounded-2xl p-4 gap-3 shadow-sm">
             <View style={[styles.settingIcon, { backgroundColor: "#DBEAFE" }]}>
               <Bell color={Colors.primary} size={20} />
             </View>
             <View style={styles.settingInfo}>
-              <Text style={styles.settingTitle}>Notifications</Text>
-              <Text style={styles.settingDescription}>
+              <Text className="text-base font-semibold text-foreground-900 mb-0.5">
+                Notifications
+              </Text>
+              <Text className="text-sm text-foreground-600">
                 Gérer les notifications
               </Text>
             </View>
             <ChevronRight color={Colors.textLight} size={20} />
-          </TouchableOpacity>
+          </Pressable>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>À propos</Text>
+          <Text className="text-lg font-bold text-foreground-900 mb-1">
+            À propos
+          </Text>
 
-          <TouchableOpacity style={styles.settingCard} activeOpacity={0.7}>
+          <Pressable className="flex-row items-center bg-card rounded-2xl p-4 gap-3 shadow-sm">
             <View style={[styles.settingIcon, { backgroundColor: "#F3E8FF" }]}>
               <FileText color="#9333EA" size={20} />
             </View>
             <View style={styles.settingInfo}>
-              <Text style={styles.settingTitle}>Conditions générales</Text>
+              <Text className="text-base font-semibold text-foreground-900 mb-0.5">
+                Conditions générales
+              </Text>
             </View>
             <ChevronRight color={Colors.textLight} size={20} />
-          </TouchableOpacity>
+          </Pressable>
 
-          <TouchableOpacity style={styles.settingCard} activeOpacity={0.7}>
+          <Pressable className="flex-row items-center bg-card rounded-2xl p-4 gap-3 shadow-sm">
             <View style={[styles.settingIcon, { backgroundColor: "#F3E8FF" }]}>
               <Shield color="#9333EA" size={20} />
             </View>
             <View style={styles.settingInfo}>
-              <Text style={styles.settingTitle}>
+              <Text className="text-base font-semibold text-foreground-900 mb-0.5">
                 Politique de confidentialité
               </Text>
             </View>
             <ChevronRight color={Colors.textLight} size={20} />
-          </TouchableOpacity>
+          </Pressable>
         </View>
 
-        <TouchableOpacity
-          style={styles.logoutButton}
+        <Pressable
+          className="flex-row items-center justify-center gap-3 bg-card rounded-2xl p-4 border-2"
+          style={{ borderColor: Colors.danger + "30" }}
           onPress={handleLogout}
-          activeOpacity={0.7}
         >
           <LogOut color={Colors.danger} size={20} />
-          <Text style={styles.logoutText}>Déconnexion</Text>
-        </TouchableOpacity>
+          <Text className="text-base font-semibold" style={{ color: Colors.danger }}>
+            Déconnexion
+          </Text>
+        </Pressable>
 
-        <Text style={styles.version}>BudgetCopain v1.0.0</Text>
+        <Text className="text-sm text-foreground-400 text-center mt-2">
+          BudgetCopain v1.0.0
+        </Text>
       </ScrollView>
     </View>
   );

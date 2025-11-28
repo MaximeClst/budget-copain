@@ -5,6 +5,9 @@ import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useRef } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import '@/global.css';
+
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
@@ -53,7 +56,9 @@ function RootLayoutNav() {
   }, [appState, isLoading, segments, pathname, router]);
 
   return (
-    <Stack screenOptions={{ headerBackTitle: "Retour" }}>
+    
+    <GluestackUIProvider mode="dark">
+      <Stack screenOptions={{ headerBackTitle: "Retour" }}>
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -73,6 +78,8 @@ function RootLayoutNav() {
         }}
       />
     </Stack>
+    </GluestackUIProvider>
+  
   );
 }
 

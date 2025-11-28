@@ -6,11 +6,10 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Button, Text, Pressable } from "@/components/ui";
 
 type Plan = "monthly" | "annual" | "lifetime";
 
@@ -80,9 +79,8 @@ export default function SubscriptionScreen() {
 
   return (
     <View style={styles.overlay}>
-      <TouchableOpacity
+      <Pressable
         style={styles.backdrop}
-        activeOpacity={1}
         onPress={handleClose}
       />
 
@@ -101,80 +99,91 @@ export default function SubscriptionScreen() {
           >
             <View style={styles.plansContainer}>
               {plans.map((plan) => (
-                <TouchableOpacity
+                <Pressable
                   key={plan.id}
+                  className="flex-1 bg-gray-50 rounded-2xl border-[3px] border-gray-200 p-4 items-center relative pt-6"
                   style={[
-                    styles.planCard,
-                    selectedPlan === plan.id && styles.planCardSelected,
+                    selectedPlan === plan.id && {
+                      backgroundColor: "#FFFFFF",
+                      borderColor: "#6366F1",
+                    },
                   ]}
                   onPress={() => setSelectedPlan(plan.id)}
-                  activeOpacity={0.8}
                 >
                   {plan.savings && (
-                    <View style={styles.savingsBadge}>
-                      <Text style={styles.savingsText}>{plan.savings}</Text>
+                    <View className="absolute -top-3 bg-indigo-500 px-3 py-1.5 rounded-xl z-10">
+                      <Text className="text-[11px] font-bold text-white tracking-wide">
+                        {plan.savings}
+                      </Text>
                     </View>
                   )}
 
-                  <View style={styles.planContent}>
+                  <View className="items-center pt-2">
                     <Text
-                      style={[
-                        styles.planNumber,
-                        selectedPlan === plan.id && styles.planNumberSelected,
-                      ]}
+                      className={`text-5xl font-light mb-0 ${
+                        selectedPlan === plan.id
+                          ? "text-gray-800"
+                          : "text-gray-400"
+                      }`}
                     >
                       {plan.name}
                     </Text>
                     <Text
-                      style={[
-                        styles.planLabel,
-                        selectedPlan === plan.id && styles.planLabelSelected,
-                      ]}
+                      className={`text-xs font-semibold tracking-wider mb-3 ${
+                        selectedPlan === plan.id
+                          ? "text-gray-600"
+                          : "text-gray-400"
+                      }`}
                     >
                       {plan.id === "lifetime" ? "UNLIMITED" : "MONTHS"}
                     </Text>
                     <Text
-                      style={[
-                        styles.planPrice,
-                        selectedPlan === plan.id && styles.planPriceSelected,
-                      ]}
+                      className={`text-2xl font-bold mb-0.5 ${
+                        selectedPlan === plan.id
+                          ? "text-gray-800"
+                          : "text-gray-400"
+                      }`}
                     >
                       ${plan.price}
                     </Text>
                     <Text
-                      style={[
-                        styles.planPriceDetail,
-                        selectedPlan === plan.id &&
-                          styles.planPriceDetailSelected,
-                      ]}
+                      className={`text-sm font-medium ${
+                        selectedPlan === plan.id
+                          ? "text-gray-600"
+                          : "text-gray-400"
+                      }`}
                     >
                       ${plan.pricePerWeek}
                       {plan.id === "lifetime" ? "" : " / week"}
                     </Text>
                     {plan.trial && (
-                      <Text style={styles.trialText}>{plan.trial}</Text>
+                      <Text className="text-xs font-semibold text-indigo-500 mt-2">
+                        {plan.trial}
+                      </Text>
                     )}
                   </View>
-                </TouchableOpacity>
+                </Pressable>
               ))}
             </View>
 
-            <Text style={styles.disclaimerText}>
+            <Text className="text-base text-gray-600 text-center leading-6 mb-6">
               Try 7-days for free, then{" "}
-              <Text style={styles.disclaimerBold}>${plans[1].price}/year</Text>.
-              {Platform.OS === "web" ? "\n" : " "}
+              <Text className="font-bold text-gray-800">
+                ${plans[1].price}/year
+              </Text>
+              .{Platform.OS === "web" ? "\n" : " "}
               You can cancel anytime.
             </Text>
 
-            <TouchableOpacity
-              style={styles.subscribeButton}
+            <Button
+              variant="solid"
               onPress={handleSelectPlan}
-              activeOpacity={0.8}
+              className="bg-gray-800 py-5 rounded-[28px] mb-3"
             >
-              <Text style={styles.subscribeButtonText}>
+              <Text className="text-white font-bold text-base tracking-wide">
                 TRY FREE & SUBSCRIBE
               </Text>
-            </TouchableOpacity>
+            </Button>
           </ScrollView>
         </SafeAreaView>
       </Animated.View>

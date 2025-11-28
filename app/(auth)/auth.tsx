@@ -1,14 +1,15 @@
+import { Button, Text } from "@/components/ui";
 import Colors from "@/constants/Colors";
 import { useApp } from "@/contexts/AppContext";
+import { getCurrentUser, signInWithGoogle } from "@/lib/supabase/auth";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Image,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,17 +20,33 @@ export default function AuthScreen() {
   const [loading, setLoading] = useState(false);
 
   const handleGoogleAuth = async () => {
-    setLoading(true);
+    try {
+      setLoading(true);
+      await signInWithGoogle();
+      const user = await getCurrentUser();
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (user) {
+        const firstName =
+          user.user_metadata?.full_name?.split(" ")[0] ||
+          user.user_metadata?.name?.split(" ")[0] ||
+          "Utilisateur";
 
-    updateUserConfig({
-      firstName: "Utilisateur",
-      email: "user@example.com",
-    });
+        updateUserConfig({
+          firstName,
+          email: user.email || "",
+        });
 
-    setLoading(false);
-    router.replace("/(onboarding)/goal");
+        router.replace("/(onboarding)/goal");
+      }
+    } catch (error: any) {
+      console.error("Erreur d'authentification:", error);
+      Alert.alert(
+        "Erreur",
+        error.message || "Impossible de se connecter avec Google"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleAppleAuth = async () => {
@@ -54,24 +71,28 @@ export default function AuthScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.content}>
           <View style={styles.header}>
-            <Text style={styles.title}>Bienvenue sur</Text>
+            <Text className="text-xl text-white/90 font-medium mb-2">
+              Bienvenue sur
+            </Text>
             <Text
-              style={styles.appName}
+              className="text-5xl font-extrabold text-white text-center tracking-tight"
               numberOfLines={1}
               adjustsFontSizeToFit
               minimumFontScale={0.7}
             >
               BudgetCopain
             </Text>
-            <Text style={styles.subtitle}>Connecte-toi pour commencer</Text>
+            <Text className="text-base text-white/80 font-medium mt-3">
+              Connecte-toi pour commencer
+            </Text>
           </View>
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[styles.authButton, styles.googleButton]}
+            <Button
+              variant="solid"
               onPress={handleGoogleAuth}
               disabled={loading}
-              activeOpacity={0.8}
+              className="bg-white"
             >
               {loading ? (
                 <ActivityIndicator color={Colors.text} />
@@ -81,18 +102,18 @@ export default function AuthScreen() {
                     source={require("@/assets/icons/google-symbol_2875404.png")}
                     style={styles.googleIcon}
                   />
-                  <Text style={styles.authButtonText}>
+                  <Text className="text-gray-900 font-semibold">
                     Continuer avec Google
                   </Text>
                 </>
               )}
-            </TouchableOpacity>
+            </Button>
 
-            <TouchableOpacity
-              style={[styles.authButton, styles.appleButton]}
+            <Button
+              variant="solid"
               onPress={handleAppleAuth}
               disabled={loading}
-              activeOpacity={0.8}
+              className="bg-black"
             >
               {loading ? (
                 <ActivityIndicator color="#FFFFFF" />
@@ -102,14 +123,14 @@ export default function AuthScreen() {
                     source={require("@/assets/icons/apple-logo.png")}
                     style={styles.appleIcon}
                   />
-                  <Text style={[styles.authButtonText, styles.appleButtonText]}>
+                  <Text className="text-white font-semibold">
                     Continuer avec Apple
                   </Text>
                 </>
               )}
-            </TouchableOpacity>
+            </Button>
 
-            <Text style={styles.disclaimer}>
+            <Text className="text-sm text-white/70 text-center leading-5 mt-2">
               En continuant, tu acceptes nos conditions générales et notre
               politique de confidentialité
             </Text>

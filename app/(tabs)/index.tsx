@@ -1,3 +1,4 @@
+import { Pressable, Text } from "@/components/ui";
 import Colors from "@/constants/Colors";
 import { useApp, useMonthData } from "@/contexts/AppContext";
 import { LinearGradient } from "expo-linear-gradient";
@@ -10,13 +11,8 @@ import {
   TrendingUp,
 } from "lucide-react-native";
 import { useState } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -59,21 +55,24 @@ export default function HomeScreen() {
         colors={[Colors.primary, Colors.primaryDark]}
         style={styles.headerGradient}
       >
-        <View style={styles.header}>
-          <View>
-            <Text style={styles.greeting}>Salut {firstName} 👋</Text>
-            <Text style={styles.monthSelector}>
-              {getMonthName(selectedMonth)}
-            </Text>
+        <SafeAreaView edges={["top"]}>
+          <View style={styles.header}>
+            <View>
+              <Text className="text-3xl font-extrabold text-white mb-1">
+                Salut {firstName} 👋
+              </Text>
+              <Text className="text-base text-white/90 font-medium">
+                {getMonthName(selectedMonth)}
+              </Text>
+            </View>
+            <Pressable
+              className="w-12 h-12 rounded-full bg-white/20 items-center justify-center"
+              onPress={() => router.push("/add-transaction" as any)}
+            >
+              <Plus color="#FFFFFF" size={24} />
+            </Pressable>
           </View>
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => router.push("/add-transaction" as any)}
-            activeOpacity={0.8}
-          >
-            <Plus color="#FFFFFF" size={24} />
-          </TouchableOpacity>
-        </View>
+        </SafeAreaView>
       </LinearGradient>
 
       <ScrollView
@@ -83,8 +82,10 @@ export default function HomeScreen() {
       >
         <View style={styles.budgetCard}>
           <View style={styles.budgetHeader}>
-            <Text style={styles.budgetLabel}>Budget mensuel</Text>
-            <Text style={styles.budgetAmount}>
+            <Text className="text-sm text-foreground-600 font-semibold mb-2">
+              Budget mensuel
+            </Text>
+            <Text className="text-4xl font-extrabold text-foreground-900">
               {monthData.budget.toFixed(0)}{" "}
               {appState.userConfig?.currency || "€"}
             </Text>
@@ -107,7 +108,7 @@ export default function HomeScreen() {
                 ]}
               />
             </View>
-            <Text style={styles.progressText}>
+            <Text className="text-sm text-foreground-600 font-semibold">
               {budgetPercentage.toFixed(0)}% utilisé
             </Text>
           </View>
@@ -117,8 +118,13 @@ export default function HomeScreen() {
               <View style={[styles.statIcon, { backgroundColor: "#FEE2E2" }]}>
                 <TrendingDown color={Colors.danger} size={20} />
               </View>
-              <Text style={styles.statLabel}>Dépenses</Text>
-              <Text style={[styles.statValue, { color: Colors.danger }]}>
+              <Text className="text-xs text-foreground-600 font-semibold">
+                Dépenses
+              </Text>
+              <Text
+                className="text-base font-bold"
+                style={{ color: Colors.danger }}
+              >
                 {monthData.totalExpenses.toFixed(0)}{" "}
                 {appState.userConfig?.currency || "€"}
               </Text>
@@ -128,8 +134,13 @@ export default function HomeScreen() {
               <View style={[styles.statIcon, { backgroundColor: "#D1FAE5" }]}>
                 <TrendingUp color={Colors.success} size={20} />
               </View>
-              <Text style={styles.statLabel}>Revenus</Text>
-              <Text style={[styles.statValue, { color: Colors.success }]}>
+              <Text className="text-xs text-foreground-600 font-semibold">
+                Revenus
+              </Text>
+              <Text
+                className="text-base font-bold"
+                style={{ color: Colors.success }}
+              >
                 {monthData.totalIncome.toFixed(0)}{" "}
                 {appState.userConfig?.currency || "€"}
               </Text>
@@ -139,15 +150,15 @@ export default function HomeScreen() {
               <View style={[styles.statIcon, { backgroundColor: "#EEF2FF" }]}>
                 <CreditCard color={Colors.primary} size={20} />
               </View>
-              <Text style={styles.statLabel}>Restant</Text>
+              <Text className="text-xs text-foreground-600 font-semibold">
+                Restant
+              </Text>
               <Text
-                style={[
-                  styles.statValue,
-                  {
-                    color:
-                      monthData.remaining >= 0 ? Colors.primary : Colors.danger,
-                  },
-                ]}
+                className="text-base font-bold"
+                style={{
+                  color:
+                    monthData.remaining >= 0 ? Colors.primary : Colors.danger,
+                }}
               >
                 {monthData.remaining.toFixed(0)}{" "}
                 {appState.userConfig?.currency || "€"}
@@ -158,20 +169,20 @@ export default function HomeScreen() {
 
         {monthData.byCategory.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Dépenses par catégorie</Text>
+            <Text className="text-xl font-bold text-foreground-900">
+              Dépenses par catégorie
+            </Text>
             <View style={styles.categoriesContainer}>
               {monthData.byCategory.slice(0, 5).map((item) => (
                 <View key={item.category.id} style={styles.categoryCard}>
                   <View style={styles.categoryHeader}>
                     <View style={styles.categoryInfo}>
-                      <Text style={styles.categoryIcon}>
-                        {item.category.icon}
-                      </Text>
-                      <Text style={styles.categoryName}>
+                      <Text className="text-2xl">{item.category.icon}</Text>
+                      <Text className="text-base font-semibold text-foreground-900">
                         {item.category.name}
                       </Text>
                     </View>
-                    <Text style={styles.categoryAmount}>
+                    <Text className="text-base font-bold text-foreground-900">
                       {item.total.toFixed(0)}{" "}
                       {appState.userConfig?.currency || "€"}
                     </Text>
@@ -187,7 +198,7 @@ export default function HomeScreen() {
                       ]}
                     />
                   </View>
-                  <Text style={styles.categoryPercentage}>
+                  <Text className="text-xs text-foreground-600 font-semibold">
                     {item.percentage.toFixed(0)}%
                   </Text>
                 </View>
@@ -197,17 +208,20 @@ export default function HomeScreen() {
         )}
 
         <View style={styles.quickActions}>
-          <TouchableOpacity
-            style={styles.actionCard}
+          <Pressable
+            className="bg-card rounded-2xl p-5 shadow-sm"
             onPress={() => router.push("/subscription" as any)}
-            activeOpacity={0.8}
           >
             <View style={[styles.actionIcon, { backgroundColor: "#FEF3C7" }]}>
               <Building color={Colors.warning} size={24} />
             </View>
-            <Text style={styles.actionTitle}>Connexion bancaire</Text>
-            <Text style={styles.actionSubtitle}>Synchronise tes comptes</Text>
-          </TouchableOpacity>
+            <Text className="text-lg font-bold text-foreground-900 mb-1">
+              Connexion bancaire
+            </Text>
+            <Text className="text-sm text-foreground-600">
+              Synchronise tes comptes
+            </Text>
+          </Pressable>
         </View>
       </ScrollView>
     </View>
@@ -227,7 +241,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingTop: 60,
+    paddingTop: 8,
     paddingBottom: 16,
   },
   greeting: {

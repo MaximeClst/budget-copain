@@ -1,9 +1,14 @@
+import { defaultCategories } from "@/constants/defaultCategories";
+import {
+  getCurrentUser,
+  getSession,
+  signOut as supabaseSignOut,
+} from "@/lib/supabase/auth";
+import { AppState, Category, Transaction, UserConfig } from "@/types";
 import createContextHook from "@nkzw/create-context-hook";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { AppState, Transaction, Category, UserConfig } from "@/types";
-import { defaultCategories } from "@/constants/defaultCategories";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const STORAGE_KEY = "@budgetcopain_data";
 
@@ -25,6 +30,23 @@ export const [AppProvider, useApp] = createContextHook(() => {
     transactions: [],
     categories: defaultCategories,
     monthlyBudgets: {},
+  });
+
+  const sessionQuery = useQuery({
+    queryKey: ["supabaseSession"],
+    queryFn: async () => {
+      try {
+        const session = await getSession();
+        if (session?.user) {
+          const user = await getCurrentUser();
+          return user;
+        }
+        return null;
+      } catch (error) {
+        console.error("Error checking session:", error);
+        return null;
+      }
+    },
   });
 
   const dataQuery = useQuery({
@@ -53,18 +75,6 @@ export const [AppProvider, useApp] = createContextHook(() => {
 
   const { mutate: saveData } = saveMutation;
 
-  useEffect(() => {
-    if (dataQuery.data) {
-      setAppState(dataQuery.data);
-    }
-  }, [dataQuery.data]);
-
-  useEffect(() => {
-    if (appState.userConfig !== null) {
-      saveData(appState);
-    }
-  }, [appState, saveData]);
-
   const updateUserConfig = useCallback((config: Partial<UserConfig>) => {
     setAppState((prev) => ({
       ...prev,
@@ -73,6 +83,35 @@ export const [AppProvider, useApp] = createContextHook(() => {
         : { ...getDefaultUserConfig(), ...config },
     }));
   }, []);
+
+  useEffect(() => {
+    if (dataQuery.data) {
+      setAppState(dataQuery.data);
+    }
+  }, [dataQuery.data]);
+
+  // Synchroniser l'utilisateur Supabase avec l'état de l'app
+  useEffect(() => {
+    if (sessionQuery.data && !appState.userConfig) {
+      const user = sessionQuery.data;
+      const firstName =
+        user.user_metadata?.full_name?.split(" ")[0] ||
+        user.user_metadata?.name?.split(" ")[0] ||
+        "Utilisateur";
+
+      updateUserConfig({
+        firstName,
+        email: user.email || "",
+      });
+    }
+    // Si pas de session mais qu'on a un userConfig, on le garde (mode anonyme)
+  }, [sessionQuery.data, appState.userConfig, updateUserConfig]);
+
+  useEffect(() => {
+    if (appState.userConfig !== null) {
+      saveData(appState);
+    }
+  }, [appState, saveData]);
 
   const completeOnboarding = useCallback(
     (config: Partial<UserConfig>) => {
@@ -150,6 +189,16 @@ export const [AppProvider, useApp] = createContextHook(() => {
   }, []);
 
   const logout = useCallback(async () => {
+    try {
+      // Déconnexion de Supabase si une session existe
+      const session = await getSession();
+      if (session) {
+        await supabaseSignOut();
+      }
+    } catch (error) {
+      console.error("Error signing out from Supabase:", error);
+    }
+
     await AsyncStorage.removeItem(STORAGE_KEY);
     setAppState({
       userConfig: null,
@@ -162,7 +211,7 @@ export const [AppProvider, useApp] = createContextHook(() => {
   return useMemo(
     () => ({
       appState,
-      isLoading: dataQuery.isLoading,
+      isLoading: dataQuery.isLoading || sessionQuery.isLoading,
       updateUserConfig,
       completeOnboarding,
       addTransaction,
@@ -176,6 +225,7 @@ export const [AppProvider, useApp] = createContextHook(() => {
     [
       appState,
       dataQuery.isLoading,
+      sessionQuery.isLoading,
       updateUserConfig,
       completeOnboarding,
       addTransaction,

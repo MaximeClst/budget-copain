@@ -1,5 +1,6 @@
+import { Button, Text } from "@/components/ui";
 import { useRouter } from "expo-router";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function WelcomeScreen() {
@@ -61,9 +62,9 @@ export default function WelcomeScreen() {
             ))}
           </View>
 
-          <View style={styles.centerContainer}>
+          <View style={[styles.centerContainer, { zIndex: 1 }]}>
             <Text
-              style={styles.buddyText}
+              className="text-5xl font-bold text-white text-center tracking-tight"
               numberOfLines={1}
               adjustsFontSizeToFit
               minimumFontScale={0.7}
@@ -73,25 +74,27 @@ export default function WelcomeScreen() {
           </View>
 
           <View style={styles.bottomSection}>
-            <TouchableOpacity
-              style={styles.primaryButton}
+            <Button
+              variant="solid"
               onPress={() => router.push("/(auth)/auth")}
-              activeOpacity={0.8}
+              className="bg-gray-800"
             >
-              <Text style={styles.primaryButtonText}>Continue</Text>
-            </TouchableOpacity>
+              <Text className="text-white font-bold text-lg">Continue</Text>
+            </Button>
 
-            <TouchableOpacity
-              style={styles.secondaryButton}
+            <Button
+              variant="outline"
               onPress={() => router.push("/(auth)/auth")}
-              activeOpacity={0.7}
+              className="bg-white border-gray-800"
             >
-              <Text style={styles.secondaryButtonText}>
+              <Text className="text-gray-800 font-semibold text-lg">
                 Continue Anonymous 🤑
               </Text>
-            </TouchableOpacity>
+            </Button>
 
-            <Text style={styles.linkText}>DEJA MEMBRE ?</Text>
+            <Text className="text-sm text-white/80 text-center font-semibold tracking-wide mt-2">
+              DEJA MEMBRE ?
+            </Text>
           </View>
         </View>
       </SafeAreaView>
@@ -123,8 +126,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 1,
-    paddingHorizontal: 20,
   },
   buddyText: {
     fontSize: 56,
