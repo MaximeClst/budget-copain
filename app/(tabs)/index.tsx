@@ -210,7 +210,7 @@ export default function HomeScreen() {
         <View style={styles.quickActions}>
           <Pressable
             className="bg-card rounded-2xl p-5 shadow-sm"
-            onPress={() => router.push("/subscription" as any)}
+            onPress={() => router.push("/bank-connection" as any)}
           >
             <View style={[styles.actionIcon, { backgroundColor: "#FEF3C7" }]}>
               <Building color={Colors.warning} size={24} />
