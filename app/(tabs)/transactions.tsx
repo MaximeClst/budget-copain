@@ -1,15 +1,13 @@
+import MoveTransaction from "@/components/Move-Transaction";
+import { Pressable, Text } from "@/components/ui";
 import Colors from "@/constants/Colors";
 import { useApp } from "@/contexts/AppContext";
+import { Transaction } from "@/types";
 import { useRouter } from "expo-router";
 import { Plus } from "lucide-react-native";
 import { useState } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, Text, Pressable } from "@/components/ui";
 
 export default function TransactionsScreen() {
   const router = useRouter();
@@ -21,6 +19,9 @@ export default function TransactionsScreen() {
       "0"
     )}`;
   });
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
+  const [isMoveModalVisible, setIsMoveModalVisible] = useState(false);
 
   const transactions = appState.transactions
     .filter((t) => t.date.startsWith(selectedMonth))
@@ -41,15 +42,15 @@ export default function TransactionsScreen() {
         <View style={styles.header}>
           <View style={styles.headerContent}>
             <View>
-              <Text className="text-4xl font-extrabold text-foreground-900 mb-1">
+              <Text className="mb-1 text-4xl font-extrabold text-foreground-900">
                 Mouvements
               </Text>
-              <Text className="text-sm text-foreground-600 font-medium">
+              <Text className="text-sm font-medium text-foreground-600">
                 {transactions.length} transactions
               </Text>
             </View>
             <Pressable
-              className="w-12 h-12 rounded-full bg-background-0 items-center justify-center"
+              className="justify-center items-center w-12 h-12 rounded-full bg-background-0"
               onPress={() => router.push("/add-transaction" as any)}
             >
               <Plus color={Colors.primary} size={24} />
@@ -65,11 +66,11 @@ export default function TransactionsScreen() {
       >
         {transactions.length === 0 ? (
           <View style={styles.emptyState}>
-            <Text className="text-6xl mb-4">📝</Text>
-            <Text className="text-xl font-bold text-foreground-900 mb-2">
+            <Text className="mb-4 text-6xl">📝</Text>
+            <Text className="mb-2 text-xl font-bold text-foreground-900">
               Aucune transaction
             </Text>
-            <Text className="text-base text-foreground-600 text-center px-10">
+            <Text className="px-10 text-base text-center text-foreground-600">
               Commence à enregistrer tes dépenses et revenus
             </Text>
           </View>
@@ -80,7 +81,11 @@ export default function TransactionsScreen() {
               return (
                 <Pressable
                   key={transaction.id}
-                  className="flex-row items-center bg-card rounded-2xl p-4 gap-3 shadow-sm"
+                  className="flex-row gap-3 items-center p-4 rounded-2xl shadow-sm bg-card"
+                  onPress={() => {
+                    setSelectedTransaction(transaction);
+                    setIsMoveModalVisible(true);
+                  }}
                 >
                   <View
                     style={[
@@ -125,6 +130,15 @@ export default function TransactionsScreen() {
           </View>
         )}
       </ScrollView>
+
+      <MoveTransaction
+        transaction={selectedTransaction}
+        visible={isMoveModalVisible}
+        onClose={() => {
+          setIsMoveModalVisible(false);
+          setSelectedTransaction(null);
+        }}
+      />
     </View>
   );
 }

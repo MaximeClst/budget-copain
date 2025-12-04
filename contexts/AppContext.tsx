@@ -256,7 +256,7 @@ export function useMonthData(month: string) {
       .filter((t) => t.type === "income")
       .reduce((sum, t) => sum + t.amount, 0);
 
-    const budget = appState.monthlyBudgets[month]?.totalBudget || 2000;
+    const budget = appState.monthlyBudgets[month]?.totalBudget || 0;
 
     const remaining = budget - totalExpenses;
 
