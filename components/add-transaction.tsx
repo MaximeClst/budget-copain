@@ -4,7 +4,13 @@ import { useApp } from "@/contexts/AppContext";
 import { CategoryId, TransactionType } from "@/types";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Platform, ScrollView, StyleSheet, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AddTransactionScreen() {
@@ -38,131 +44,138 @@ export default function AddTransactionScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
-      <ScrollView
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.keyboardView}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
-        <View style={styles.typeSelector}>
-          <Pressable
-            className="flex-1 items-center py-4 rounded-2xl border-2 bg-card"
-            style={[
-              type === "expense"
-                ? {
-                    backgroundColor: Colors.danger + "10",
-                    borderColor: Colors.danger,
-                  }
-                : { borderColor: Colors.border },
-            ]}
-            onPress={() => setType("expense")}
-          >
-            <Text
-              className={
-                type === "expense"
-                  ? "text-base font-bold text-foreground-900"
-                  : "text-base font-semibold text-foreground-600"
-              }
-            >
-              Dépense
-            </Text>
-          </Pressable>
-          <Pressable
-            className="flex-1 items-center py-4 rounded-2xl border-2 bg-card"
-            style={[
-              type === "income"
-                ? {
-                    backgroundColor: Colors.success + "10",
-                    borderColor: Colors.success,
-                  }
-                : { borderColor: Colors.border },
-            ]}
-            onPress={() => setType("income")}
-          >
-            <Text
-              className={
-                type === "income"
-                  ? "text-base font-bold text-foreground-900"
-                  : "text-base font-semibold text-foreground-600"
-              }
-            >
-              Revenu
-            </Text>
-          </Pressable>
-        </View>
-
-        <View style={styles.amountContainer}>
-          <Input
-            value={amount}
-            onChangeText={setAmount}
-            placeholder="0"
-            keyboardType="decimal-pad"
-            autoFocus
-            className="text-5xl font-extrabold text-center min-w-[100px] border-0 bg-transparent p-0"
-          />
-          <Text className="text-3xl font-bold text-foreground-600">
-            {appState.userConfig?.currency || "€"}
-          </Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text className="text-lg font-bold text-foreground-900">
-            Catégorie
-          </Text>
-          <View style={styles.categoriesGrid}>
-            {appState.categories
-              .filter((c) => c.isActive)
-              .map((category) => (
-                <Pressable
-                  key={category.id}
-                  className="flex-row gap-2 items-center px-4 py-3 rounded-xl border-2 bg-card"
-                  style={[
-                    categoryId === category.id && {
-                      backgroundColor: category.color,
-                      borderColor: category.color,
-                    },
-                  ]}
-                  onPress={() => setCategoryId(category.id)}
-                >
-                  <Text className="text-xl">{category.icon}</Text>
-                  <Text
-                    className={
-                      categoryId === category.id
-                        ? "text-base font-bold text-white"
-                        : "text-base font-semibold text-foreground-900"
-                    }
-                  >
-                    {category.name}
-                  </Text>
-                </Pressable>
-              ))}
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text className="text-lg font-bold text-foreground-900">
-            Note (optionnel)
-          </Text>
-          <Input
-            value={note}
-            onChangeText={setNote}
-            placeholder="Ajouter une note..."
-            multiline
-            numberOfLines={Platform.OS === "ios" ? undefined : 3}
-            textAlignVertical="top"
-            className="bg-white"
-          />
-        </View>
-      </ScrollView>
-
-      <View style={styles.footer}>
-        <Button
-          variant="solid"
-          onPress={handleSave}
-          disabled={!amount || parseFloat(amount) <= 0}
-          style={styles.saveButton}
+        <ScrollView
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-          <Text className="text-base font-bold text-white">Enregistrer</Text>
-        </Button>
-      </View>
+          <View style={styles.typeSelector}>
+            <Pressable
+              className="flex-1 items-center py-4 rounded-2xl border-2 bg-card"
+              style={[
+                type === "expense"
+                  ? {
+                      backgroundColor: Colors.danger + "10",
+                      borderColor: Colors.danger,
+                    }
+                  : { borderColor: Colors.border },
+              ]}
+              onPress={() => setType("expense")}
+            >
+              <Text
+                className={
+                  type === "expense"
+                    ? "text-base font-bold text-foreground-900"
+                    : "text-base font-semibold text-foreground-600"
+                }
+              >
+                Dépense
+              </Text>
+            </Pressable>
+            <Pressable
+              className="flex-1 items-center py-4 rounded-2xl border-2 bg-card"
+              style={[
+                type === "income"
+                  ? {
+                      backgroundColor: Colors.success + "10",
+                      borderColor: Colors.success,
+                    }
+                  : { borderColor: Colors.border },
+              ]}
+              onPress={() => setType("income")}
+            >
+              <Text
+                className={
+                  type === "income"
+                    ? "text-base font-bold text-foreground-900"
+                    : "text-base font-semibold text-foreground-600"
+                }
+              >
+                Revenu
+              </Text>
+            </Pressable>
+          </View>
+
+          <View style={styles.amountContainer}>
+            <Input
+              value={amount}
+              onChangeText={setAmount}
+              placeholder="0"
+              keyboardType="decimal-pad"
+              autoFocus
+              className="text-5xl font-extrabold text-center min-w-[100px] border-0 bg-transparent p-0"
+            />
+            <Text className="text-3xl font-bold text-foreground-600">
+              {appState.userConfig?.currency || "€"}
+            </Text>
+          </View>
+
+          <View style={styles.section}>
+            <Text className="text-lg font-bold text-foreground-900">
+              Catégorie
+            </Text>
+            <View style={styles.categoriesGrid}>
+              {appState.categories
+                .filter((c) => c.isActive)
+                .map((category) => (
+                  <Pressable
+                    key={category.id}
+                    className="flex-row gap-2 items-center px-4 py-3 rounded-xl border-2 bg-card"
+                    style={[
+                      categoryId === category.id && {
+                        backgroundColor: category.color,
+                        borderColor: category.color,
+                      },
+                    ]}
+                    onPress={() => setCategoryId(category.id)}
+                  >
+                    <Text className="text-xl">{category.icon}</Text>
+                    <Text
+                      className={
+                        categoryId === category.id
+                          ? "text-base font-bold text-white"
+                          : "text-base font-semibold text-foreground-900"
+                      }
+                    >
+                      {category.name}
+                    </Text>
+                  </Pressable>
+                ))}
+            </View>
+          </View>
+
+          <View style={styles.section}>
+            <Text className="text-lg font-bold text-foreground-900">
+              Note (optionnel)
+            </Text>
+            <Input
+              value={note}
+              onChangeText={setNote}
+              placeholder="Ajouter une note..."
+              multiline
+              numberOfLines={Platform.OS === "ios" ? undefined : 3}
+              textAlignVertical="top"
+              className="bg-white"
+            />
+          </View>
+        </ScrollView>
+
+        <View style={styles.footer}>
+          <Button
+            variant="solid"
+            onPress={handleSave}
+            disabled={!amount || parseFloat(amount) <= 0}
+            style={styles.saveButton}
+          >
+            <Text className="text-base font-bold text-white">Enregistrer</Text>
+          </Button>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -172,9 +185,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
+  keyboardView: {
+    flex: 1,
+  },
   content: {
     padding: 20,
     gap: 32,
+    paddingBottom: 100,
   },
   typeSelector: {
     flexDirection: "row",

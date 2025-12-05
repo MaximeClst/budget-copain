@@ -292,7 +292,7 @@ export default function HomeScreen() {
                 onPress={handleSaveBudget}
                 className="items-center py-4 rounded-xl bg-primary"
               >
-                <Text className="text-base font-bold text-foreground-900">
+                <Text className="text-base font-bold text-white">
                   Enregistrer
                 </Text>
               </Pressable>
