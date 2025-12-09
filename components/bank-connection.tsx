@@ -173,13 +173,10 @@ export default function BankConnectionScreen() {
 
       // Utiliser openBrowserAsync pour permettre les redirections vers les sites bancaires
       // openAuthSessionAsync peut bloquer les redirections vers des domaines externes
-      const result = await WebBrowser.openBrowserAsync(webviewUrl, {
-        showTitle: true,
-        toolbarColor: Colors.primary,
-        enableBarCollapsing: false,
-        // Ne pas créer de nouvelle tâche pour permettre les redirections multiples
-        createTask: false,
-      });
+      const result = await WebBrowser.openAuthSessionAsync(
+        webviewUrl,
+        REDIRECT_URI
+      );
 
       webBrowserRef.current = result;
       console.log("Résultat WebBrowser:", result.type, result);
@@ -188,6 +185,11 @@ export default function BankConnectionScreen() {
       if (result.type === "cancel" || result.type === "dismiss") {
         console.log("Webview fermée par l'utilisateur");
         setLoading(false);
+      } else if (result.type === "success") {
+        console.log("Redirection réussie, traitement de l'URL:", result.url);
+        if (result.url) {
+          handleDeepLink({ url: result.url });
+        }
       } else if (result.type === "opened") {
         // Le navigateur s'est ouvert et on attend le deep link
         // Le deep link sera géré par handleDeepLink quand Powens redirigera
@@ -227,7 +229,7 @@ export default function BankConnectionScreen() {
         <View style={styles.header}>
           <Pressable
             onPress={() => router.back()}
-            className="w-10 h-10 rounded-full bg-gray-100 items-center justify-center"
+            className="justify-center items-center w-10 h-10 bg-gray-100 rounded-full"
           >
             <X color={Colors.text} size={20} />
           </Pressable>
@@ -245,10 +247,10 @@ export default function BankConnectionScreen() {
           </View>
         </View>
 
-        <Text className="text-2xl font-bold text-foreground-900 text-center mb-3">
+        <Text className="mb-3 text-2xl font-bold text-center text-foreground-900">
           Connecte ta banque
         </Text>
-        <Text className="text-base text-foreground-600 text-center mb-8 px-6">
+        <Text className="px-6 mb-8 text-base text-center text-foreground-600">
           Synchronise tes comptes bancaires pour suivre automatiquement tes
           dépenses et revenus
         </Text>
@@ -262,19 +264,19 @@ export default function BankConnectionScreen() {
         <Pressable
           onPress={handleConnectBank}
           disabled={loading}
-          className="bg-primary rounded-2xl p-5 items-center justify-center"
+          className="justify-center items-center p-5 rounded-2xl bg-primary"
           style={[loading && styles.buttonDisabled]}
         >
           {loading ? (
             <ActivityIndicator color={Colors.primaryDark} />
           ) : (
-            <Text className="text-primaryDark font-bold text-base">
+            <Text className="text-base font-bold text-primaryDark">
               Commencer la connexion
             </Text>
           )}
         </Pressable>
 
-        <Text className="text-xs text-foreground-500 text-center mt-6 px-8">
+        <Text className="px-8 mt-6 text-xs text-center text-foreground-500">
           En continuant, tu acceptes que tes données bancaires soient traitées
           de manière sécurisée par Powens
         </Text>
