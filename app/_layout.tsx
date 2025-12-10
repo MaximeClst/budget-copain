@@ -5,6 +5,7 @@ import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useRef } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+import StripeProvider from "@/components/stripe-provider";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
 import * as Linking from "expo-linking";
@@ -95,35 +96,37 @@ function RootLayoutNav() {
   }, [appState, isLoading, segments, pathname, router]);
 
   return (
-    <GluestackUIProvider mode="dark">
-      <Stack screenOptions={{ headerBackTitle: "Retour" }}>
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="add-transaction"
-          options={{
-            presentation: "modal",
-            headerTitle: "Nouvelle transaction",
-          }}
-        />
-        <Stack.Screen
-          name="subscription"
-          options={{
-            presentation: "transparentModal",
-            headerShown: false,
-            animation: "fade",
-          }}
-        />
-        <Stack.Screen
-          name="bank-connection"
-          options={{
-            presentation: "modal",
-            headerShown: false,
-          }}
-        />
-      </Stack>
-    </GluestackUIProvider>
+    <StripeProvider>
+      <GluestackUIProvider mode="dark">
+        <Stack screenOptions={{ headerBackTitle: "Retour" }}>
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="add-transaction"
+            options={{
+              presentation: "modal",
+              headerTitle: "Nouvelle transaction",
+            }}
+          />
+          <Stack.Screen
+            name="subscription"
+            options={{
+              presentation: "transparentModal",
+              headerShown: false,
+              animation: "fade",
+            }}
+          />
+          <Stack.Screen
+            name="bank-connection"
+            options={{
+              presentation: "modal",
+              headerShown: false,
+            }}
+          />
+        </Stack>
+      </GluestackUIProvider>
+    </StripeProvider>
   );
 }
 

@@ -1,0 +1,564 @@
+---
+alwaysApply: true
+---
+
+1. Résumé du produit
+
+Nom : BudgetCopain
+Plateformes : iOS & Android (React Native + Expo)
+Backend : Supabase (Auth, Database, Storage, Edge Functions)
+Objectif :
+Créer une application mobile simple, intuitive, et fun, inspirée de “Buddy: Budget & Money Planner”, permettant aux utilisateurs de :
+
+Suivre leur budget mensuel
+
+Gérer leurs dépenses et revenus
+
+Personnaliser leurs catégories
+
+Visualiser leurs dépenses
+
+Connecter leur banque (via Powens)
+
+Accéder à des fonctionnalités premium via un modèle freemium
+
+2. Problème à résoudre
+
+La majorité des apps de budget sont soit :
+
+trop complexes
+
+trop techniques
+
+trop lourdes
+
+trop riches en fonctionnalités non essentielles
+
+Les utilisateurs veulent :
+
+✔ Une app simple
+✔ Un suivi clair du budget
+✔ Des catégories propres
+✔ Une connexion bancaire automatique
+✔ Une interface agréable
+
+BudgetCopain répond à ce besoin en simplifiant l’expérience au maximum.
+
+3. Vision
+
+Offrir un compagnon simple et fiable pour aider chacun à mieux gérer son argent sans stress.
+“Ton pote pour mieux gérer ton budget.”
+
+4. Personae / Public cible
+   🧍‍♂️ Personne type 1 : Le débutant financier
+
+20–35 ans
+
+Souhaite éviter les dépassements
+
+Pas très à l’aise avec les chiffres
+
+Veut une app simple sans jargon
+
+🧍‍♂️ Personne type 2 : Le minimaliste
+
+Déjà testé des apps de budget trop complexes
+
+Veut juste suivre des catégories simples
+
+Pas besoin d’analyse avancée
+
+🧍‍♂️ Personne type 3 : L’utilisateur “premium” potentiel
+
+A plusieurs comptes bancaires
+
+Veut une catégorisation automatique
+
+Veut automatiser le budget
+
+Est prêt à payer pour le confort
+
+5. Objectifs de la V1
+   🎯 Must Have (Obligatoires)
+
+Auth Google & Apple (Supabase)
+
+Onboarding avec questionnaire
+
+Dashboard budget mensuel
+
+Catégories personnalisables
+
+Ajout de dépenses & revenus
+
+Graphique simple
+
+Freemium actif : limites dans le plan gratuit
+
+Paywall + écran abonnements
+
+Structure prête pour Powens (connexion bancaire)
+
+🎯 Should Have (Important)
+
+Placeholder de connexion bancaire
+
+Récupération auto des transactions bancaires hors V1
+→ Mais le flow UX doit exister
+
+🎯 Nice to Have (Secondaire)
+
+Analyse simple “Vous avez dépassé les 80% sur Nourriture”
+
+Export CSV/PDF (peut venir en V2)
+
+6. Flow utilisateur (UX complet)
+1. First Launch → Onboarding Intro
+
+→ Bouton "Commencer"
+
+2. Auth
+
+→ Google
+→ Apple
+
+3. Mini Questionnaire
+
+3 écrans :
+
+“Comment l'app peut t’aider ?”
+
+“À l’aise avec ton budget ?”
+
+“Méthode de suivi ?”
+
+Enregistrement dans user_config.config (jsonb Supabase).
+
+4. Dashboard (Home)
+
+L'utilisateur voit :
+
+Budget global du mois
+
+Graphique
+
+Catégories
+
+Bouton “+ Ajouter un mouvement”
+
+5. Mouvements
+
+Il peut :
+
+Ajouter dépense
+
+Ajouter revenu
+
+Voir l’historique filtré
+
+6. Catégories
+
+Il peut :
+
+Ajouter
+
+Modifier
+
+Supprimer / désactiver
+
+7. Freemium
+
+Si limite atteinte → Paywall
+Si connexion bancaire demandée → Paywall
+
+8. Paramètres
+
+Profil
+
+Plan actuel
+
+Devise
+
+Support
+
+9. Connexion bancaire (powens)
+
+Flow mocké en V1
+
+Structure dataset prête
+
+7. Structure des écrans (V1)
+   7.1. Onboarding Intro
+
+Logo BudgetCopain
+
+Baseline : “Ton pote pour gérer ton budget”
+
+CTA : Commencer
+
+Lien : J’ai déjà un compte
+
+7.2. Auth
+
+Boutons Google & Apple
+
+Utilisation de supabase.auth.signInWithOAuth()
+
+Redirection selon profil existant
+
+7.3. Mini Onboarding
+
+3 écrans successifs.
+À la fin :
+
+Sauvegarde des réponses dans user_config
+
+Création automatique des catégories par défaut :
+
+Logement, Nourriture, Transport, Loisirs, Autres
+
+7.4. Dashboard
+
+Contient :
+
+Header
+
+“Bonjour [Prénom]”
+
+Switch de mois
+
+Budget global
+
+Budget du mois
+
+Dépenses totales
+
+Restant
+
+Barre de progression
+
+Graphique dynamique
+
+Vue évolution
+
+Vue catégories
+
+Catégories (cartes)
+
+Nom
+
+Budget category
+
+Dépenses category
+
+Barre d’avancement
+
+Actions
+
+Nouveau mouvement
+
+Gérer catégories
+
+Connexion bancaire
+
+Bandeau plan premium
+
+7.5. Mouvements
+
+Liste :
+
+Montant
+
+Catégorie
+
+Date
+
+Source (manual / bank)
+
+Filtres :
+
+Date
+
+Catégorie
+
+Type
+
+7.6. Nouveau mouvement
+
+Champs :
+
+Montant
+
+Type
+
+Catégorie
+
+Date
+
+Note
+
+7.7. Catégories
+
+Actions :
+
+Ajouter
+
+Modifier
+
+Modifier budget
+
+Désactiver
+
+Freemium :
+
+Gratuit → max 5 catégories
+
+Premium → illimité
+
+7.8. Connexion bancaire (Powens)
+
+V1 = placeholder UX
+
+Sélection banque mockée
+
+Écran “Connexion en cours”
+
+Écran “Banque connectée”
+
+Stockage local des infos dans Supabase
+
+7.9. Paywall / Abonnements
+
+3 offres :
+
+Free
+
+5 catégories
+
+Pas de connexion bancaire
+
+Transactions manuelles seulement
+
+Historique limité
+
+Premium (mensuel / annuel)
+
+Connexion bancaire
+
+Catégories illimitées
+
+Sync auto
+
+Historique illimité
+
+Multi budgets
+
+Exports
+
+Lifetime (one-time)
+
+Tout le premium
+
+Mises à jour incluses
+
+7.10. Paramètres
+
+Nom
+
+Email
+
+Type d'abonnement
+
+Devise
+
+Premier jour de la semaine
+
+Avec un bouton “Gérer mon plan” → Paywall
+
+8. Modèles de données (Supabase)
+
+Toutes tables côté Supabase (SQL):
+
+8.1. users (géré par supabase)
+
+Colonnes additionnelles :
+
+name text
+config jsonb
+created_at timestamp
+
+8.2. subscription_plan
+id uuid
+user_id uuid FK
+plan_type text (free | monthly | annual | lifetime)
+start_date timestamp
+end_date timestamp null
+created_at timestamp
+updated_at timestamp
+
+8.3. categories
+id uuid
+user_id uuid FK
+name text
+color text
+monthly_budget numeric
+is_active boolean
+created_at timestamp
+
+8.4. transactions
+id uuid
+user_id uuid FK
+category_id uuid FK
+amount numeric
+type text (expense | income)
+date date
+source text (manual | bank)
+note text
+created_at timestamp
+
+8.5. bank_connections (placeholder)
+id uuid
+user_id uuid FK
+provider_name text
+status text
+last_sync timestamp
+
+8.6. bank_accounts (placeholder)
+id uuid
+user_id uuid FK
+bank_connection_id uuid
+name text
+iban_masked text
+balance numeric null
+
+9. Règles Freemium / Premium
+   Plan gratuit
+
+max 5 catégories
+
+pas de connexion bancaire
+
+historique limité à 3 mois
+
+transactions manuelles uniquement
+
+pas d'analyse avancée
+
+Premium
+
+catégories illimitées
+
+connexion bancaire
+
+synchronisation automatique
+
+catégorisation automatique
+
+règles intelligentes
+
+historique illimité
+
+multi budgets
+
+export PDF/CSV
+
+Lifetime
+
+tout premium
+
+mises à jour incluses
+
+10. Roadmap V1
+    Sprint 1 — Base & Auth
+
+Setup Expo
+
+Setup Supabase client
+
+Auth Google & Apple
+
+Onboarding + mini questionnaire
+
+Création des tables Supabase
+
+Sprint 2 — Dashboard
+
+Vue budget global
+
+Graphique simple
+
+Ajouter catégories par défaut
+
+Affichage catégories
+
+Sprint 3 — Mouvements
+
+CRUD transactions
+
+Filtrage
+
+Mise à jour du dashboard
+
+Sprint 4 — Freemium
+
+Implémentation limites free
+
+Paywall
+
+Gestion du plan dans Supabase
+
+Sprint 5 — Connexion bancaire (placeholder)
+
+Flow UX complet
+
+Écrans
+
+Table bank_connections
+
+Sprint 6 — Finalisation
+
+Paramètres
+
+Tests
+
+Ajustements UX/UI
+
+11. KPIs
+
+Pour mesurer la performance :
+
+Activation onboarding (% de users finissant le flow)
+
+Ajout de min. 1 mouvement (%)
+
+Création d’une 6ème catégorie (trigger freemium)
+
+Clic sur “Connecter ma banque” (%)
+
+Conversion gratuite → premium
+
+Rétention 7 jours / 30 jours
+
+12. Risques / Complexités
+
+Intégration réelle Powens (tech + compliance)
+
+Gestion correcte du freemium dans l’UX
+
+Load de données (transactions) pour performance mobile
+
+Simplicité UI à maintenir malgré l’ajout de fonctionnalités futures
+
+13. Post-V1 (pour roadmap future)
+
+IA pour analyse financière personnalisée
+
+Automatisation avancée des règles
+
+Budgets collaboratifs (couple / famille)
+
+Notifications push intelligentes
+
+Export PDF
+
+Widgets iOS / Android

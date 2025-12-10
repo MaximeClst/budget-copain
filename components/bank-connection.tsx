@@ -19,6 +19,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import SuccessBank from "./SuccessBank";
 
 const AUTH_TOKEN_KEY = "@powens_auth_token";
 // Utiliser le redirect_uri spécifique pour cette page (configuré dans Powens)
@@ -29,6 +30,8 @@ export default function BankConnectionScreen() {
   const searchParams = useLocalSearchParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [connectionId, setConnectionId] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
   const webBrowserRef = useRef<WebBrowser.WebBrowserAuthSessionResult | null>(
     null
   );
@@ -56,16 +59,11 @@ export default function BankConnectionScreen() {
       }
 
       if (connection_id) {
-        Alert.alert(
-          "Connexion réussie !",
-          `Votre compte bancaire a été connecté avec succès. Connection ID: ${connection_id}`,
-          [
-            {
-              text: "OK",
-              onPress: () => router.back(),
-            },
-          ]
-        );
+        const connectionIdStr = Array.isArray(connection_id)
+          ? connection_id[0]
+          : connection_id;
+        setConnectionId(connectionIdStr as string);
+        setShowSuccess(true);
       }
     },
     [router]
@@ -100,16 +98,8 @@ export default function BankConnectionScreen() {
       }
 
       if (connectionIdStr) {
-        Alert.alert(
-          "Connexion réussie !",
-          `Votre compte bancaire a été connecté avec succès. Connection ID: ${connectionIdStr}`,
-          [
-            {
-              text: "OK",
-              onPress: () => router.back(),
-            },
-          ]
-        );
+        setConnectionId(connectionIdStr as string);
+        setShowSuccess(true);
       }
     }
   }, [searchParams, router]);
@@ -222,6 +212,22 @@ export default function BankConnectionScreen() {
       setLoading(false);
     }
   };
+
+  if (showSuccess && connectionId) {
+    return (
+      <SuccessBank
+        connectionId={connectionId}
+        onContinue={() => {
+          setShowSuccess(false);
+          router.back();
+        }}
+        onClose={() => {
+          setShowSuccess(false);
+          router.back();
+        }}
+      />
+    );
+  }
 
   return (
     <View style={styles.container}>
